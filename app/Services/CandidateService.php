@@ -106,8 +106,8 @@ class CandidateService
         if (preg_match($pattern, $career, $matches)) {
             return [
                 $matches[1],
-                (int)$matches[2],
-                $matches[3] === 'Sekarang' ? null : (int)$matches[3]
+                (int) $matches[2],
+                $matches[3] === 'Sekarang' ? null : (int) $matches[3],
             ];
         }
 
