@@ -98,7 +98,7 @@ class CandidateService
         return $careerData;
     }
 
-    private static function extractCareerInfo(string $career): ?array
+    public static function extractCareerInfo(string $career): ?array
     {
         $pattern = '/^(.*?)\s*\((\d{4})-(\d{4}|\S+)\)$/';
         $matches = [];
