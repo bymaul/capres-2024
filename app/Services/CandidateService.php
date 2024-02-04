@@ -10,41 +10,24 @@ use GuzzleHttp\Client;
 
 class CandidateService
 {
+    const MOCKI_API_URL = 'https://mocki.io/v1/92a1f2ef-bef2-4f84-8f06-1965f0fca1a7';
+
     public static function fetchData()
     {
-        $url = 'https://mocki.io/v1/92a1f2ef-bef2-4f84-8f06-1965f0fca1a7';
-
         $client = new Client();
 
         try {
-            $response = $client->get($url);
+            $response = $client->get(self::MOCKI_API_URL);
             $data = json_decode($response->getBody(), true);
 
-            $presidentialCandidates = [];
-            foreach ($data['calon_presiden'] as $presidentialCandidateData) {
-                $presidentialCandidates[] = new CandidateData(
-                    $presidentialCandidateData['nomor_urut'],
-                    PositionStatus::PRESIDENT,
-                    $presidentialCandidateData['nama_lengkap'],
-                    self::parseBirthPlace($presidentialCandidateData['tempat_tanggal_lahir']),
-                    self::parseBirthDate($presidentialCandidateData['tempat_tanggal_lahir']),
-                    self::countAge($presidentialCandidateData['tempat_tanggal_lahir']),
-                    self::parseCareer($presidentialCandidateData['karir'])
-                );
-            }
-
-            $vicePresidentialCandidates = [];
-            foreach ($data['calon_wakil_presiden'] as $vicePresidentialCandidateData) {
-                $vicePresidentialCandidates[] = new CandidateData(
-                    $vicePresidentialCandidateData['nomor_urut'],
-                    PositionStatus::VICE_PRESIDENT,
-                    $vicePresidentialCandidateData['nama_lengkap'],
-                    self::parseBirthPlace($vicePresidentialCandidateData['tempat_tanggal_lahir']),
-                    self::parseBirthDate($vicePresidentialCandidateData['tempat_tanggal_lahir']),
-                    self::countAge($vicePresidentialCandidateData['tempat_tanggal_lahir']),
-                    self::parseCareer($vicePresidentialCandidateData['karir'])
-                );
-            }
+            $presidentialCandidates = self::processCandidates(
+                $data['calon_presiden'],
+                PositionStatus::PRESIDENT
+            );
+            $vicePresidentialCandidates = self::processCandidates(
+                $data['calon_wakil_presiden'],
+                PositionStatus::VICE_PRESIDENT
+            );
 
             return response()->json([
                 'calon_presiden' => $presidentialCandidates,
@@ -55,27 +38,46 @@ class CandidateService
         }
     }
 
-    public static function parseBirthPlace($data): string
+    private static function processCandidates(array $candidatesData, PositionStatus $positionStatus): array
     {
-        $birthPlace = explode(', ', $data);
-        return $birthPlace[0];
+        $candidates = [];
+
+        foreach ($candidatesData as $candidateData) {
+            $candidates[] = self::createCandidate($candidateData, $positionStatus);
+        }
+
+        return $candidates;
     }
 
-    public static function parseBirthDate($data): string
+    private static function createCandidate(array $candidateData, PositionStatus $positionStatus): CandidateData
     {
-
-        $birthDate = explode(', ', $data);
-        return Carbon::parseFromLocale($birthDate[1], 'id');
+        return new CandidateData(
+            $candidateData['nomor_urut'],
+            $positionStatus,
+            $candidateData['nama_lengkap'],
+            self::parseBirthPlace($candidateData['tempat_tanggal_lahir']),
+            self::parseBirthDate($candidateData['tempat_tanggal_lahir']),
+            self::countAge($candidateData['tempat_tanggal_lahir']),
+            self::parseCareer($candidateData['karir'])
+        );
     }
 
-    public static function countAge($data): int
+    public static function parseBirthPlace(string $data): string
     {
-        $data = self::parseBirthDate($data);
-
-        return Carbon::parseFromLocale($data, 'id')->age;
+        return explode(', ', $data)[0];
     }
 
-    public static function parseCareer($careers): array
+    public static function parseBirthDate(string $data): Carbon
+    {
+        return Carbon::parseFromLocale(explode(', ', $data)[1], 'id');
+    }
+
+    public static function countAge(string $data): int
+    {
+        return Carbon::parseFromLocale(self::parseBirthDate($data), 'id')->age;
+    }
+
+    public static function parseCareer(array $careers): array
     {
         $careerData = [];
 
@@ -96,16 +98,16 @@ class CandidateService
         return $careerData;
     }
 
-    private static function extractCareerInfo($career): ?array
+    private static function extractCareerInfo(string $career): ?array
     {
-        $pattern = '/^(.*?) \((\d{4})-(\d{4})\)$/';
+        $pattern = '/^(.*?)\s*\((\d{4})-(\d{4}|\S+)\)$/';
         $matches = [];
 
         if (preg_match($pattern, $career, $matches)) {
             return [
                 $matches[1],
-                $matches[2],
-                $matches[3]
+                (int)$matches[2],
+                $matches[3] === 'Sekarang' ? null : (int)$matches[3]
             ];
         }
 

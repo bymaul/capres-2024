@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Services\CandidateService;
-use GuzzleHttp\Client;
 
 class CandidateController extends Controller
 {
