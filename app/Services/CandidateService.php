@@ -10,35 +10,20 @@ use GuzzleHttp\Client;
 
 class CandidateService
 {
-    const MOCKI_API_URL = 'https://mocki.io/v1/92a1f2ef-bef2-4f84-8f06-1965f0fca1a7';
-
-    public static function fetchData()
+    public static function fetchData(string $url)
     {
         $client = new Client();
 
         try {
-            $response = $client->get(self::MOCKI_API_URL);
-            $data = json_decode($response->getBody(), true);
+            $response = $client->get($url);
 
-            $presidentialCandidates = self::processCandidates(
-                $data['calon_presiden'],
-                PositionStatus::PRESIDENT
-            );
-            $vicePresidentialCandidates = self::processCandidates(
-                $data['calon_wakil_presiden'],
-                PositionStatus::VICE_PRESIDENT
-            );
-
-            return response()->json([
-                'calon_presiden' => $presidentialCandidates,
-                'calon_wakil_presiden' => $vicePresidentialCandidates,
-            ]);
+            return json_decode($response->getBody(), true);
         } catch (\Exception $e) {
             return response()->json(['error' => $e->getMessage()], 500);
         }
     }
 
-    private static function processCandidates(array $candidatesData, PositionStatus $positionStatus): array
+    public static function processCandidates(array $candidatesData, PositionStatus $positionStatus): array
     {
         $candidates = [];
 
