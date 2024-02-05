@@ -13,14 +13,6 @@ class CandidateController extends Controller
 
         $candidates = CandidateService::fetchData($mock_url);
 
-        usort($candidates['calon_presiden'], function ($a, $b) {
-            return $a['nomor_urut'] - $b['nomor_urut'];
-        });
-
-        usort($candidates['calon_wakil_presiden'], function ($a, $b) {
-            return $a['nomor_urut'] - $b['nomor_urut'];
-        });
-
         $presidentialCandidates = CandidateService::processCandidates(
             $candidates['calon_presiden'],
             PositionStatus::PRESIDENT

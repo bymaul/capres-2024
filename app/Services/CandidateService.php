@@ -17,7 +17,17 @@ class CandidateService
         try {
             $response = $client->get($url);
 
-            return json_decode($response->getBody(), true);
+            $candidates = json_decode($response->getBody(), true);
+
+            usort($candidates['calon_presiden'], function ($a, $b) {
+                return $a['nomor_urut'] - $b['nomor_urut'];
+            });
+
+            usort($candidates['calon_wakil_presiden'], function ($a, $b) {
+                return $a['nomor_urut'] - $b['nomor_urut'];
+            });
+
+            return $candidates;
         } catch (\Exception $e) {
             return response()->json(['error' => $e->getMessage()], 500);
         }
