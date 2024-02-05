@@ -4,6 +4,13 @@ use App\Services\CandidateService;
 
 const BIRTH_DATE_PLACE = 'City, 1990-01-01';
 
+it('fetches data correctly', function () {
+    $url = 'https://mocki.io/v1/92a1f2ef-bef2-4f84-8f06-1965f0fca1a7';
+    $data = CandidateService::fetchData($url);
+
+    expect($data)->toBeArray();
+});
+
 it('parses birth place correctly', function () {
     $birthPlace = CandidateService::parseBirthPlace(BIRTH_DATE_PLACE);
 
