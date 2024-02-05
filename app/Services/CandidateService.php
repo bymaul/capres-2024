@@ -10,7 +10,7 @@ use GuzzleHttp\Client;
 
 class CandidateService
 {
-    public static function fetchData(string $url)
+    public static function fetchData(string $url): array
     {
         $client = new Client();
 
@@ -29,7 +29,11 @@ class CandidateService
 
             return $candidates;
         } catch (\Exception $e) {
-            return response()->json(['error' => $e->getMessage()], 500);
+            return [
+                'message' => $e->getMessage(),
+                'calon_presiden' => [],
+                'calon_wakil_presiden' => []
+            ];
         }
     }
 
