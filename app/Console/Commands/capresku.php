@@ -46,12 +46,12 @@ class CapresKu extends Command
 
         $this->info('Presidential Candidates:');
         foreach ($presidentialCandidates as $candidate) {
-            $this->info($candidate->nomor_urut . '. ' . $candidate->nama_lengkap);
+            $this->info($candidate->nomor_urut.'. '.$candidate->nama_lengkap);
         }
 
         $this->info('Vice Presidential Candidates:');
         foreach ($vicePresidentialCandidates as $candidate) {
-            $this->info($candidate->nomor_urut . '. ' . $candidate->nama_lengkap);
+            $this->info($candidate->nomor_urut.'. '.$candidate->nama_lengkap);
         }
     }
 }

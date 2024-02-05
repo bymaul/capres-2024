@@ -25,7 +25,7 @@ class CandidateController extends Controller
 
         return view('index', [
             'presidentialCandidates' => $presidentialCandidates,
-            'vicePresidentialCandidates' => $vicePresidentialCandidates
+            'vicePresidentialCandidates' => $vicePresidentialCandidates,
         ]);
     }
 }
