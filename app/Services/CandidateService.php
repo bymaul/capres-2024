@@ -32,7 +32,7 @@ class CandidateService
             return [
                 'message' => $e->getMessage(),
                 'calon_presiden' => [],
-                'calon_wakil_presiden' => []
+                'calon_wakil_presiden' => [],
             ];
         }
     }
