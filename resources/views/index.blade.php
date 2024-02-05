@@ -19,8 +19,7 @@
         <div class="grid grid-cols-3 gap-6 mt-3">
             @foreach ($presidentialCandidates as $candidate)
                 <div class="bg-white rounded-xl p-6">
-                    <div
-                        class="bg-slate-700 rounded-full text-white flex justify-center items-center size-8 text-lg mb-3">
+                    <div class="bg-slate-200 rounded-full flex justify-center items-center size-8 text-lg mb-3">
                         {{ $candidate->nomor_urut }}
                     </div>
                     <h3 class="inline-block font-semibold text-lg">
@@ -48,8 +47,7 @@
         <div class="grid grid-cols-3 gap-6 mt-3">
             @foreach ($vicePresidentialCandidates as $candidate)
                 <div class="bg-white rounded-xl p-6">
-                    <div
-                        class="bg-slate-700 rounded-full text-white flex justify-center items-center size-8 text-lg mb-3">
+                    <div class="bg-slate-200 rounded-full flex justify-center items-center size-8 text-lg mb-3">
                         {{ $candidate->nomor_urut }}
                     </div>
                     <h3 class="inline-block font-semibold text-lg">
