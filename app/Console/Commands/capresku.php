@@ -6,7 +6,7 @@ use App\Enums\PositionStatus;
 use App\Services\CandidateService;
 use Illuminate\Console\Command;
 
-class capresku extends Command
+class CapresKu extends Command
 {
     /**
      * The name and signature of the console command.
